@@ -1,0 +1,13 @@
+{
+  "domain": "energylive",
+  "name": "energyLIVE Integration",
+  "dependencies": [
+    "recorder"
+  ],
+  "config_flow": true,
+  "iot_class": "cloud_push",
+  "requirements": [
+    "httpx"
+  ],
+  "version": "0.1.0"
+}
