@@ -1,6 +1,11 @@
 {
   "domain": "energylive",
   "name": "energyLIVE Integration",
+  "codeowners": [
+    "@berwinter"
+  ],
+  "documentation": "https://github.com/berwinter/ha-energylive",
+  "issue_tracker": "https://github.com/berwinter/ha-energylive/issues",
   "dependencies": [
     "recorder"
   ],
