@@ -1,27 +1,28 @@
-"""Platform for sensor integration."""
+"""Platform for energyLIVE sensor integration."""
 
 from __future__ import annotations
 
 from homeassistant.components.sensor import (
+    RestoreSensor,
     SensorDeviceClass,
     SensorStateClass,
-    RestoreSensor,
 )
-from homeassistant.util import slugify
 from homeassistant.const import (
-    EntityCategory,
     PERCENTAGE,
     SIGNAL_STRENGTH_DECIBELS,
     SIGNAL_STRENGTH_DECIBELS_MILLIWATT,
-    UnitOfTemperature,
+    EntityCategory,
     UnitOfElectricPotential,
     UnitOfEnergy,
     UnitOfPower,
+    UnitOfTemperature,
 )
 from homeassistant.core import HomeAssistant, callback
-from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from . import const
 from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers.entity_platform import AddEntitiesCallback
+from homeassistant.util import slugify
+
+from . import const
 
 
 async def async_setup_entry(
@@ -84,8 +85,6 @@ async def async_setup_entry(
 
 
 class SensorBase(RestoreSensor):
-    """Base representation of a Hello World Sensor."""
-
     _attr_should_poll = False
 
     def __init__(self, device, measurement):

@@ -1,19 +1,27 @@
+"""energyLIVE API."""
+
 from __future__ import annotations
-from typing import Callable
+
+import asyncio
+from collections.abc import Callable
+import json
+import logging
 import traceback
 
-import json
 import httpx
-import logging
-import asyncio
-from homeassistant.util.ssl import get_default_context
+
+from homeassistant.core import HomeAssistant
 from homeassistant.helpers.start import async_at_start
+from homeassistant.util.ssl import get_default_context
 
 _LOGGER = logging.getLogger(__name__)
 
 
 class EnergyLive:
-    def __init__(self, apiKey, hass=None):
+    """EnergyLIVE hub base class."""
+
+    def __init__(self, apiKey, hass: HomeAssistant | None = None, entry=None):
+        self._entry = entry
         self._hass = hass
         self._apiKey = apiKey
         self._devices = []
@@ -28,8 +36,11 @@ class EnergyLive:
             devices = await self._client.get(
                 "https://backend.energylive.e-steiermark.com/api/v1/devices"
             )
-        for dev in devices.json():
-            self._devices.append(Device(self, dev, self._hass))
+            if devices.status_code == 401 and self._entry is not None:
+                self._entry.async_start_reauth()
+            else:
+                for dev in devices.json():
+                    self._devices.append(Device(self, dev, self._hass))
         return self._devices
 
 
@@ -51,15 +62,24 @@ class Device:
             response = await self._energylive._client.get(
                 f"https://backend.energylive.e-steiermark.com/api/v1/devices/{self._id}"
             )
-            response = response.json()
-            self._type = response["type"]
-            self._serial = response["serial"]
-            measurements = await self._energylive._client.get(
-                f"https://backend.energylive.e-steiermark.com/api/v1/devices/{self._id}/measurements"
-            )
-            for measurement in measurements.json():
-                self._measurements[measurement] = None
-            self._details = True
+            if response.status_code == 401 and self._energylive._entry is not None:
+                self._energylive._entry.async_start_reauth()
+            else:
+                response = response.json()
+                self._type = response["type"]
+                self._serial = response["serial"]
+                measurements = await self._energylive._client.get(
+                    f"https://backend.energylive.e-steiermark.com/api/v1/devices/{self._id}/measurements"
+                )
+                if (
+                    measurements.status_code == 401
+                    and self._energylive._entry is not None
+                ):
+                    self._energylive._entry.async_start_reauth()
+                else:
+                    for measurement in measurements.json():
+                        self._measurements[measurement] = None
+                    self._details = True
 
     async def _async_startup(self, loop):
         self._background_task = self._hass.async_create_background_task(
@@ -80,25 +100,30 @@ class Device:
                 timeout=httpx.Timeout(60.0, read=900),
             )
             r = await self._energylive._client.send(request, stream=True)
-            try:
-                async for line in r.aiter_lines():
-                    if line:
-                        decoded_line = "{" + line.replace("data", '"data"') + "}"
-                        try:
-                            data = json.loads(decoded_line)
-                            await self.publish_updates(
-                                data["data"]["measurement"], data["data"]["value"]
-                            )
-                        except json.JSONDecodeError:
-                            pass
-            except (httpx.ReadTimeout, httpx.RemoteProtocolError):
-                pass
-            except Exception as e:
-                _LOGGER.warning(f"{self._id}: restart connection... - {type(e)}\n{e}")
-                _LOGGER.warning(traceback.format_exc())
-                await asyncio.sleep(100)
+            if r.status_code == 401 and self._energylive._entry is not None:
+                self._energylive._entry.async_start_reauth()
+                break
+            else:
+                try:
+                    async for line in r.aiter_lines():
+                        if line:
+                            decoded_line = "{" + line.replace("data", '"data"') + "}"
+                            try:
+                                data = json.loads(decoded_line)
+                                await self.publish_updates(
+                                    data["data"]["measurement"], data["data"]["value"]
+                                )
+                            except json.JSONDecodeError:
+                                pass
+                except (httpx.ReadTimeout, httpx.RemoteProtocolError):
+                    pass
+                except Exception as e:
+                    _LOGGER.warning(
+                        f"{self._id}: restart connection... - {type(e)}\n{e}"
+                    )
+                    _LOGGER.warning(traceback.format_exc())
+                    await asyncio.sleep(100)
             await r.aclose()
-
 
     async def publish_updates(self, measurement, value) -> None:
         self._measurements[measurement] = value
