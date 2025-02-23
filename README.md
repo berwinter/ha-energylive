@@ -14,12 +14,12 @@ This custom compenent for [Home Assistant](https://www.home-assistant.io) provid
 
 3. Select &#8942; and then `Custom repositories`.
 
-4. Set `Repository` to *https://github.com/berwinter/ha_energylive*  
+4. Set `Repository` to *https://github.com/berwinter/ha-energylive*  
    and `Category` to _Integration_.
 
 5. Install **energyLIVE** integration via HACS:
 
-   [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=berwinter&repository=ha_energylive)
+   [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=berwinter&repository=ha-energylive)
 
    If the button doesn't work: Open `HACS` > `Integrations` > `Explore & Download Repositories` and select integration `energyLIVE`.
 
