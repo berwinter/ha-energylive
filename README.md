@@ -24,6 +24,7 @@ This custom compenent for [Home Assistant](https://www.home-assistant.io) provid
    [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=berwinter&repository=ha-energylive)
 
    If the button doesn't work: Open `HACS` > `Integrations` > `Explore & Download Repositories` and select integration `energyLIVE`.
+   
    <img src="./doc/hacs_energylive.png" width="40%" alt="Install energyLIVE"><img src="./doc/hacs_install_done.png" width="40%" alt="Installation done">
 
 
@@ -35,9 +36,11 @@ This custom compenent for [Home Assistant](https://www.home-assistant.io) provid
 
 1. Obtain energyLIVE API key via smartENERGY app or webpage:
    
-   <img src="./doc/obtain_api_key.png" width="40%" alt="Obtain API key for energyLIVE">
-   <img src="./doc/obtain_api_key_1.png" width="40%" alt="Obtain API key for energyLIVE">
-   <img src="./doc/obtain_api_key_2.png" width="40%" alt="Obtain API key for energyLIVE">
+   <img src="./doc/obtain_api_key.png" width="80%" alt="Obtain API key for energyLIVE">
+   
+   <img src="./doc/obtain_api_key_1.png" width="80%" alt="Obtain API key for energyLIVE">
+   
+   <img src="./doc/obtain_api_key_2.png" width="80%" alt="Obtain API key for energyLIVE">
    
 
 2. Add energyLIVE custom integration in Home Assistant and provide your API key:
