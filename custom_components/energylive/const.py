@@ -26,10 +26,10 @@ CONST_GATEWAY_DEVICE = "gateway"
 SENSOR_NAME_MAP = {
     CONST_CURRENT_POWER_CONSUMPTION: "Current Power Consumption",
     CONST_ENERGY_CONSUMPTION: "Energy Consumed",
-    CONST_CURRENT_POWER_GENERATION: "Current Power Generation",
-    CONST_ENERGY_GENERATION: "Energy Generated",
+    CONST_CURRENT_POWER_GENERATION: "Current Power Return to Grid",
+    CONST_ENERGY_GENERATION: "Energy Returned to Grid",
     CONST_REACTIVE_ENERGY_CONSUMPTION: "Reactive Energy Consumed",
-    CONST_REACTIVE_ENERGY_GENERATION: "Reactive Energy Generated",
+    CONST_REACTIVE_ENERGY_GENERATION: "Reactive Energy Returned to Grid",
     CONST_BATTERY_VOLTAGE: "Battery Voltage",
     CONST_ERROR_CODE: "Error Code",
     CONST_FREE_HEAP: "Free Heap",
