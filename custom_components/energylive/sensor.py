@@ -47,6 +47,7 @@ async def async_setup_entry(
             model_id=device._serial,
         )
         for measurement in device._measurements:
+            entity = None
             match measurement:
                 case const.CONST_ROOM_TEMPERATURE:
                     entity = TemperatureSensor(device, measurement)
@@ -79,7 +80,8 @@ async def async_setup_entry(
                     entity = ReactiveEnergySensor(device, measurement)
                 case const.CONST_REACTIVE_ENERGY_GENERATION:
                     entity = ReactiveEnergySensor(device, measurement)
-            new_devices.append(entity)
+            if entity:
+                new_devices.append(entity)
     if new_devices:
         async_add_entities(new_devices)
 
